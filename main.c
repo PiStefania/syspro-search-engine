@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "index.h"
 #include "variousMethods.h"
+#include "invertedIndex.h"
 
 int main (int argc,char* argv[]){
 	
@@ -27,7 +28,9 @@ int main (int argc,char* argv[]){
 		fclose (inFile);
 	}
 	
-	printMapIndex(index,lines);
+	//printMapIndex(index,lines);
+	rootNode* root;
+	populateTrie(root,index,lines);
 	destroyMapIndex(index,lines);
 	
 	return 0;
