@@ -29,9 +29,12 @@ int main (int argc,char* argv[]){
 	}
 	
 	//printMapIndex(index,lines);
-	rootNode* root;
+	rootNode *root = createRoot();
 	populateTrie(root,index,lines);
+	
+	//delete data structures
 	destroyMapIndex(index,lines);
+	destroyInvertedIndex(&root);
 	
 	return 0;
 }

@@ -6,16 +6,13 @@
 
 typedef struct trieN trieNode;
 typedef struct levelQueue headQueue;
+typedef struct postingListsNode postingLists;
 
-typedef struct postingListsNode{
+struct postingListsNode{
 	int id;
 	int timesAppeared;
+	postingLists* next;
 }postingListsNode;
-
-typedef struct postingLists{
-	postingListsNode* arrayPosting;
-	int size;
-}postingLists;
 
 struct trieN{
 	char character;
@@ -26,6 +23,7 @@ struct trieN{
 
 struct levelQueue{
 	trieNode* firstNode;
+	trieNode* lastNode;
 	int size;
 }levelQueue;
 
@@ -38,9 +36,11 @@ rootNode* createRoot();
 headQueue* createHeadQueue();
 void populateTrie(rootNode* root,mapIndex* index,int noElems);
 void insertTrie(char* word,int id,rootNode* root);
-void insertHeadQueue(rootNode* root,char c,int lastChar);
-trieNode* createNode(char c,int lastChar);
-postingLists* createPostList();
-void doublePostList(postingLists* array);
+headQueue* insertCharacter(headQueue* wordQueue,char c,int id,int lastChar);
+trieNode* createNode(char c);
+void insertPostList(postingLists** list,int id);
+void destroyInvertedIndex(rootNode** root);
+void destroyPostList(trieNode** node);
+void destroyHeadQueues(headQueue** head);
 
 #endif
