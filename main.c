@@ -32,6 +32,9 @@ int main (int argc,char* argv[]){
 	rootNode *root = createRoot();
 	populateTrie(root,index,lines);
 	
+	//queries
+	optionsUserInput(K);
+	
 	//delete data structures
 	destroyMapIndex(index,lines);
 	destroyInvertedIndex(&root);

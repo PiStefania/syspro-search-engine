@@ -1,8 +1,8 @@
 CC = gcc -g
-FILES = main.c variousMethods.c index.c invertedIndex.c
-OBJECTS = main.o variousMethods.o index.o invertedIndex.o
+FILES = main.c variousMethods.c index.c invertedIndex.c searchQuery.c
+OBJECTS = main.o variousMethods.o index.o invertedIndex.o searchQuery.o
 OUT = minisearch
-HEADERS = variousMethods.h index.h invertedIndex.h
+HEADERS = variousMethods.h index.h invertedIndex.h searchQuery.h
 
 
 all: $(OBJECTS) $(HEADERS)
@@ -20,6 +20,9 @@ index.o: index.c
 	
 invertedIndex.o: invertedIndex.c
 	$(CC) -c invertedIndex.c
+	
+searchQuery.o: searchQuery.c
+	$(CC) -c searchQuery.c
 	
 clean:
 	rm -f $(OBJECTS)
