@@ -19,6 +19,7 @@ struct trieN{
 	trieNode *nextNode;
 	headQueue *head;
 	postingLists* postList;
+	int documentFrequency;
 }trieN;
 
 struct levelQueue{
@@ -38,7 +39,7 @@ void populateTrie(rootNode* root,mapIndex* index,int noElems);
 void insertTrie(char* word,int id,rootNode* root);
 headQueue* insertCharacter(headQueue* wordQueue,char c,int id,int lastChar);
 trieNode* createNode(char c);
-void insertPostList(postingLists** list,int id);
+int insertPostList(postingLists** list,int id);
 void destroyInvertedIndex(rootNode** root);
 void destroyPostList(trieNode** node);
 void destroyHeadQueues(headQueue** head);
