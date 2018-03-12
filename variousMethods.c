@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "variousMethods.h"
+#include "tfQuery.h"
 #define MAX_WORDS 10
 
 void pickArgumentsMain(int argc,char* argv[],char** docfile,int* K){
@@ -54,7 +55,7 @@ int checkFileGetLines(FILE *fp){
 	int lines = 0;
 	
 	//change after
-	int counterIds = 1;
+	int counterIds = 0;
 	int id;
 	char* line = NULL;
 	while((read = getline(&line, &len, fp)) != -1){
@@ -89,7 +90,7 @@ int checkFileGetLines(FILE *fp){
 	return lines;
 }
 
-void optionsUserInput(int K){
+void optionsUserInput(int K,rootNode* root){
 	int read;
 	size_t len = 0;
 	char* line = NULL;
@@ -104,7 +105,6 @@ void optionsUserInput(int K){
 				printf("Exiting process.\n");
 				break;
 			}else if(strcmp(token,"/search")==0){
-				printf("search\n");
 				token = strtok(NULL," ");
 				if(token == NULL){
 					printf("Search query with no search words.Terminating process.\n");
@@ -124,7 +124,32 @@ void optionsUserInput(int K){
 			}else if(strcmp(token,"/df")==0){
 				printf("df\n");
 			}else if(strcmp(token,"/tf")==0){
-				printf("tf\n");
+				token = strtok(NULL," ");
+				if(token == NULL){
+					printf("Tf query with no document id.Terminating process.\n");
+					break;
+				}
+				int id = atoi(token);
+				if(id == 0 && token[0]!='0'){
+					printf("Tf query with false document id.Terminating process.\n");
+					break;
+				}
+				char* word = strtok(NULL," ");
+				if(word == NULL){
+					printf("Tf query with no search word.Terminating process.\n");
+					break;
+				}
+				
+				int timesAppeared = returnTimesAppeared(root,id,word);
+				if(timesAppeared == -1){
+					printf("An error occured.Terminating process.\n");
+					break;
+				}else if(timesAppeared == -2 || timesAppeared == 0){
+					printf("Not found.\n");
+				}else{
+					printf("%d %s %d\n",id,word,timesAppeared);
+				}
+				
 			}else{
 				printf("Your input is not a query.Terminating process.\n");				
 				break;

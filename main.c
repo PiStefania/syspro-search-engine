@@ -4,6 +4,7 @@
 #include "variousMethods.h"
 #include "invertedIndex.h"
 
+
 int main (int argc,char* argv[]){
 	
 	int K=0;
@@ -33,7 +34,7 @@ int main (int argc,char* argv[]){
 	populateTrie(root,index,lines);
 	
 	//queries
-	optionsUserInput(K);
+	optionsUserInput(K,root);
 	
 	//delete data structures
 	destroyMapIndex(index,lines);
