@@ -32,13 +32,14 @@ headQueue* createHeadQueue(){
 }
 
 
-trieNode* createNode(char c){
+trieNode* createNode(char c,int firstChar){
 	trieNode* node = malloc(sizeof(trieNode));
 	node->character = c;
 	node->nextNode = NULL;
 	node->head = NULL;
 	node->postList = NULL;
 	node->documentFrequency = 0;
+	node->firstChar = firstChar;
 	return node;
 }
 
@@ -86,16 +87,20 @@ void insertTrie(char* word,int id,rootNode* root){
 	for(int i=0; i<strlen(word); i++){
 		char currentChar = word[i];
 		int lastChar = 0;
+		int firstChar = 0;
 		if(i == strlen(word)-1)
 			lastChar = 1;
-		head = insertCharacter(head,currentChar,id,lastChar);
+		if(i==0){
+			firstChar = 1;
+		}
+		head = insertCharacter(head,currentChar,id,lastChar,firstChar);
 	}
 }
 
-headQueue* insertCharacter(headQueue* wordQueue,char c,int id,int lastChar){
+headQueue* insertCharacter(headQueue* wordQueue,char c,int id,int lastChar,int firstChar){
 	if(wordQueue == NULL){
 		wordQueue = createHeadQueue();
-		wordQueue->firstNode = createNode(c);
+		wordQueue->firstNode = createNode(c,firstChar);
 		if(lastChar){
 			int newNodeCreated = insertPostList(&wordQueue->firstNode->postList,id);
 			if(newNodeCreated){
@@ -124,7 +129,7 @@ headQueue* insertCharacter(headQueue* wordQueue,char c,int id,int lastChar){
 	}
 
 	if(wordQueue->firstNode == NULL){
-		wordQueue->firstNode = createNode(c);
+		wordQueue->firstNode = createNode(c,firstChar);
 		if(lastChar){
 			int newNodeCreated = insertPostList(&wordQueue->firstNode->postList,id);
 			if(newNodeCreated){
@@ -136,7 +141,7 @@ headQueue* insertCharacter(headQueue* wordQueue,char c,int id,int lastChar){
 		wordQueue->size++;
 		return wordQueue->firstNode->head;
 	}else{
-		wordQueue->lastNode->nextNode = createNode(c);
+		wordQueue->lastNode->nextNode = createNode(c,firstChar);
 		if(lastChar){
 			int newNodeCreated = insertPostList(&wordQueue->lastNode->nextNode->postList,id);
 			if(newNodeCreated){

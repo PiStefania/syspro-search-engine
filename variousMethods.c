@@ -4,7 +4,9 @@
 #include <string.h>
 #include "variousMethods.h"
 #include "tfQuery.h"
+#include "dfQuery.h"
 #define MAX_WORDS 10
+#define STACK_SIZE 10
 
 void pickArgumentsMain(int argc,char* argv[],char** docfile,int* K){
 	
@@ -122,7 +124,25 @@ void optionsUserInput(int K,rootNode* root){
 					words++;
 				}
 			}else if(strcmp(token,"/df")==0){
-				printf("df\n");
+				token = strtok(NULL," ");
+				if(token == NULL){
+					//return all
+					stack* stackWord = malloc(sizeof(stack));
+					initializeStack(&stackWord,STACK_SIZE);					
+					printf("----BFS----\n");
+					BFS(root->start->firstNode,stackWord);
+				}else{
+					//return df of specific word
+					int specificDocumentFrequency = retDocFrequency(root,token);
+					if(specificDocumentFrequency == -1){
+						printf("An error occured.Terminating process.\n");
+						break;
+					}else if(specificDocumentFrequency == -2 || specificDocumentFrequency == 0){
+						printf("Not found.\n");
+					}else{
+						printf("%s %d\n",token,specificDocumentFrequency);
+					}
+				}
 			}else if(strcmp(token,"/tf")==0){
 				token = strtok(NULL," ");
 				if(token == NULL){
