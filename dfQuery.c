@@ -45,6 +45,8 @@ void DFS(trieNode* node,stack* stackWord){
 			pushNode->lastChar = 0;
 		}
 		stackPush(stackWord,pushNode);
+		free(pushNode);
+		pushNode = NULL;
 		if(node->postList != NULL){
 			printCurrentStack(stackWord);
 			printf(" %d\n",node->documentFrequency);

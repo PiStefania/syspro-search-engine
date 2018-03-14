@@ -129,8 +129,8 @@ void optionsUserInput(int K,rootNode* root){
 					//return all
 					stack* stackWord = malloc(sizeof(stack));
 					initializeStack(&stackWord,STACK_SIZE);					
-					printf("----BFS----\n");
 					DFS(root->start->firstNode,stackWord);
+					destroyStack(&stackWord);
 				}else{
 					//return df of specific word
 					int specificDocumentFrequency = retDocFrequency(root,token);
