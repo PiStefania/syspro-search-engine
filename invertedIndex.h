@@ -3,7 +3,6 @@
 
 #include "index.h"
 
-
 typedef struct trieN trieNode;
 typedef struct levelQueue headQueue;
 typedef struct postingListsNode postingLists;
@@ -33,10 +32,9 @@ typedef struct rootNode{
 	headQueue* start;
 }rootNode;
 
-
 rootNode* createRoot();
 headQueue* createHeadQueue();
-void populateTrie(rootNode* root,mapIndex* index,int noElems);
+void populateTrie(rootNode* root,mapIndex* index,int noElems,generalInfo* info);
 void insertTrie(char* word,int id,rootNode* root);
 headQueue* insertCharacter(headQueue* wordQueue,char c,int id,int lastChar,int firstChar);
 trieNode* createNode(char c,int firstChar);

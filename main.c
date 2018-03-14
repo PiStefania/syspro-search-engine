@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "searchQuery.h"
 #include "index.h"
-#include "variousMethods.h"
 #include "invertedIndex.h"
+#include "variousMethods.h"
 
 
 int main (int argc,char* argv[]){
@@ -14,6 +15,8 @@ int main (int argc,char* argv[]){
 	FILE *inFile;
 	inFile = fopen(docfile,"r");
 	mapIndex* index = NULL;
+	generalInfo* info = NULL;
+	initializeGeneralInfo(&info);
 	int lines = 0;
 	if(inFile!=NULL)
 	{
@@ -24,14 +27,14 @@ int main (int argc,char* argv[]){
 			exit(1);
 		}else{
 			rewind(inFile);
-			index = populateIndex(lines,inFile);
+			index = populateIndex(lines,inFile,info);
 		}
 		fclose (inFile);
 	}
 	
 	//printMapIndex(index,lines);
 	rootNode *root = createRoot();
-	populateTrie(root,index,lines);
+	populateTrie(root,index,lines,info);
 	
 	//queries
 	optionsUserInput(K,root);
@@ -39,6 +42,7 @@ int main (int argc,char* argv[]){
 	//delete data structures
 	destroyMapIndex(index,lines);
 	destroyInvertedIndex(&root);
+	destroyGeneralInfo(&info);
 	
 	return 0;
 }

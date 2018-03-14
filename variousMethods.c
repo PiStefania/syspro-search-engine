@@ -5,6 +5,8 @@
 #include "variousMethods.h"
 #include "tfQuery.h"
 #include "dfQuery.h"
+#include "searchQuery.h"
+
 #define MAX_WORDS 10
 #define STACK_SIZE 10
 
@@ -99,7 +101,7 @@ void optionsUserInput(int K,rootNode* root){
 	char* token = NULL;
 	printf("Input desirable query: \n");
 	while(1){
-		printf("Reminder ('/search 10words', '/df multiple words', '/tf id word', '/exit').\n");
+		printf("Reminder ('/search 10words', '/df', '/df word', '/tf id word', '/exit').\n");
 		if((read = getline(&line, &len, stdin)) != -1){
 			line = strtok(line,"\n");
 			token = strtok(line," ");
@@ -114,13 +116,13 @@ void optionsUserInput(int K,rootNode* root){
 				}
 				int words = 1;
 				while(token!=NULL){
+					//search		
+					
+					//last word
 					if(words == MAX_WORDS){
 						break;
 					}
-					
-					//function
-					
-					
+					token = strtok(NULL," ");
 					words++;
 				}
 			}else if(strcmp(token,"/df")==0){

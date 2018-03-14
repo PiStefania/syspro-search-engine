@@ -9,19 +9,25 @@ rootNode* createRoot(){
 	return root;
 }
 
-void populateTrie(rootNode* root,mapIndex* index,int noElems){
+void populateTrie(rootNode* root,mapIndex* index,int noElems,generalInfo* info){
 	char* tempWord = NULL;
+	int counterWords = 0;
 	for(int i=0;i<noElems;i++){
+		int wordsSpecificDoc = 0;
 		if(index[i].document == NULL)
 			continue;
 		
 		tempWord = strtok(index[i].document," ");
 		while(tempWord!=NULL){
 			//insert to trie
-			insertTrie(tempWord,index[i].id,root);
+			counterWords++;
+			wordsSpecificDoc++;
+			insertTrie(tempWord,i,root);
 			tempWord = strtok(NULL," ");
 		}
+		index[i].words = wordsSpecificDoc;
 	}
+	info->totalWords = counterWords;
 }
 
 headQueue* createHeadQueue(){

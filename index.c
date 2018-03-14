@@ -3,8 +3,7 @@
 #include <string.h>
 #include "index.h"
 
-
-mapIndex* populateIndex(int lines,FILE *fp){
+mapIndex* populateIndex(int lines,FILE *fp,generalInfo* info){
 	mapIndex* index = (mapIndex*) malloc(lines*sizeof(mapIndex));
 	int read;
 	char *line = NULL;
@@ -18,7 +17,6 @@ mapIndex* populateIndex(int lines,FILE *fp){
 		}
 		
 		tempLine = strtok(tempLine," \t");
-		int id = atoi(tempLine);
 		char* document = strtok(NULL,"");
 		char* temp;
 		if(document != NULL){
@@ -30,7 +28,6 @@ mapIndex* populateIndex(int lines,FILE *fp){
 			temp = NULL;
 		}
 		
-		index[counter].id = id;
 		if(temp == NULL){
 			index[counter].document = NULL;
 		}
@@ -44,6 +41,9 @@ mapIndex* populateIndex(int lines,FILE *fp){
 		counter++;
 	}
 	
+	//set total docs
+	info->totalDocuments = counter;
+	
 	if(line){
 		free(line);
 		line = NULL;
@@ -55,7 +55,7 @@ mapIndex* populateIndex(int lines,FILE *fp){
 void printMapIndex(mapIndex* index,int noElems){
 	printf("Printing Map Index\n");
 	for(int i=0; i < noElems; i++){
-		printf("ID: '%d', document: '%s'\n",index[i].id,index[i].document);
+		printf("ID: '%d', document: '%s'\n",i,index[i].document);
 	}
 }
 
