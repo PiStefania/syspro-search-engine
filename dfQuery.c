@@ -33,66 +33,38 @@ int retDocFrequency(rootNode* root,char* word){
 	}
 }
 
-void BFS(trieNode* node,stack* stackWord){
+void DFS(trieNode* node,stack* stackWord){
 	if (node != NULL){
-		if (node->nextNode != NULL){
-			BFS(node->nextNode,stackWord);
-		}
-		
-		if (node->head->firstNode != NULL){
-			BFS(node->head->firstNode,stackWord);
-		}
-		
 		
 		stackNode* pushNode = malloc(sizeof(stackNode));
 		pushNode->alternatives = node->head->size;
 		pushNode->character = node->character;
-		pushNode->docFrequency = node->documentFrequency;
 		if(node->postList != NULL){
 			pushNode->lastChar = 1;
 		}else{
 			pushNode->lastChar = 0;
 		}
 		stackPush(stackWord,pushNode);
-		
-		if(node->firstChar){
-			//end of word
-			int docFrequency = 0;
-			
-			printStack(stackWord);
-			int counterUp = 0;
-			int lastFlag = 0;
-			int alternatives = 0;
+		if(node->postList != NULL){
+			printCurrentStack(stackWord);
+			printf(" %d\n",node->documentFrequency);
 			while(!stackIsEmpty(stackWord)){
-				stackNode* tempNode = stackPop(stackWord);
-				if(tempNode == NULL){
-					break;
-				}else if(tempNode->alternatives < 0){
-					//last char 
-					docFrequency = tempNode->docFrequency;
-					printf("%c %d\n",tempNode->character,docFrequency);
-					stackWord->top += counterUp;
-					lastFlag = 1;
-					alternatives--;
-					break;
-				}else if(tempNode->alternatives == 0){
-					//has next char
-					if(lastFlag){
-						counterUp++;
-						stackWord->top -= counterUp;
-						lastFlag = 0;
-						counterUp = 0;
-					}
-					printf("%c",tempNode->character);
-					if(alternatives != 0){
-						counterUp++;
-					}
+				if(stackWord->elements[stackWord->top].alternatives == 0 && stackWord->elements[stackWord->top].lastChar){
+					stackPop(stackWord);
+				}else if(stackWord->elements[stackWord->top].alternatives == 1 && !stackWord->elements[stackWord->top].lastChar){
+					stackPop(stackWord);
 				}else{
-					//has more alternatives
-					alternatives = tempNode->alternatives;
-					printf("%c",tempNode->character);				
+					stackWord->elements[stackWord->top].alternatives--;
+					break;
 				}
 			}
+		}
+		
+		if (node->head->firstNode != NULL){
+			DFS(node->head->firstNode,stackWord);
+		}
+		if (node->nextNode != NULL){
+			DFS(node->nextNode,stackWord);
 		}
 	}
 }
@@ -139,23 +111,23 @@ void stackPush(stack* stackWord,stackNode* node){
 
 stackNode* stackPop(stack* stackWord){	
 	if(!stackIsEmpty(stackWord)){
-		if(stackWord->elements[stackWord->top].alternatives <= 1){
-			stackWord->elements[stackWord->top].alternatives--;
-			stackNode* elem = &stackWord->elements[stackWord->top];
-			stackWord->top--;
-			return elem;
-		}
-		else{
-			stackWord->elements[stackWord->top].alternatives--;
-			stackNode* elem = &stackWord->elements[stackWord->top];
-			return elem;
-		}
+		stackNode* elem = &stackWord->elements[stackWord->top];
+		stackWord->top--;
+		return elem;
 	}
 	return NULL;
 }
 
 void printStack(stack* stackWord){
 	for(int i=stackWord->top;i>=0;i--){
-		printf("%dth Elem: %c\n",i,stackWord->elements[i].character);
+		printf("%dth Elem: %c with alt: %d\n",i,stackWord->elements[i].character,stackWord->elements[i].alternatives);
 	}
 }
+
+void printCurrentStack(stack* stackWord){
+	for(int i=0; i <=stackWord->top; i++){
+		printf("%c",stackWord->elements[i].character);
+	}
+}
+
+

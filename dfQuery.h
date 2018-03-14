@@ -4,7 +4,6 @@
 typedef struct stackNode{
 	int alternatives;
 	char character;
-	int docFrequency;
 	int lastChar;
 }stackNode;
 
@@ -16,7 +15,7 @@ typedef struct stack{
 
 //df's functions
 int retDocFrequency(rootNode* root,char* word);
-void BFS(trieNode* node,stack* stackWord);
+void DFS(trieNode* node,stack* stackWord);
 
 //stack's functions
 void initializeStack(stack** stackWord,int size);
@@ -27,6 +26,7 @@ void doubleStack(stack* stackWord);
 void stackPush(stack* stackWord,stackNode* node);
 stackNode* stackPop(stack* stackWord);
 void printStack(stack* stackWord);
+void printCurrentStack(stack* stackWord);
 
 
 #endif
