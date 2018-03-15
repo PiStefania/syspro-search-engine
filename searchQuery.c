@@ -2,21 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "searchQuery.h"
-#define K1 1.2
-#define B 0.75
-
-void initializeGeneralInfo(generalInfo** info){
-	*info = malloc(sizeof(generalInfo));
-	(*info)->totalWords = 0;
-	(*info)->totalDocuments = 0;
-	(*info)->k1 = K1;
-	(*info)->b = B;
-}
-
-void destroyGeneralInfo(generalInfo** info){
-	free(*info);
-	*info = NULL;
-}
 
 void getScoreParameters(rootNode* root,char* word,generalInfo* info){
 	if(root == NULL){
@@ -36,7 +21,7 @@ void getScoreParameters(rootNode* root,char* word,generalInfo* info){
 					tempNode = tempNode->head->firstNode;
 					break;
 				}else{
-					frequencyWord = searchPostList(tempNode->postList);
+					frequencyWord = searchPL(tempNode->postList);
 				}
 			}else{
 				tempNode = tempNode->nextNode;

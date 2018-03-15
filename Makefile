@@ -1,8 +1,8 @@
 CC = gcc -g
-FILES = main.c variousMethods.c index.c invertedIndex.c searchQuery.c tfQuery.c dfQuery.c
-OBJECTS = main.o variousMethods.o index.o invertedIndex.o searchQuery.o tfQuery.o dfQuery.o
+FILES = main.c variousMethods.c index.c invertedIndex.c searchQuery.c tfQuery.c dfQuery.c generalInfo.c
+OBJECTS = main.o variousMethods.o index.o invertedIndex.o searchQuery.o tfQuery.o dfQuery.o generalInfo.o
 OUT = minisearch
-HEADERS = variousMethods.h index.h invertedIndex.h searchQuery.h tfQuery.h dfQuery.h
+HEADERS = variousMethods.h index.h invertedIndex.h searchQuery.h tfQuery.h dfQuery.h generalInfo.h
 
 
 all: $(OBJECTS) $(HEADERS)
@@ -29,6 +29,9 @@ tfQuery.o: tfQuery.c
 	
 dfQuery.o: dfQuery.c
 	$(CC) -c dfQuery.c
+	
+generalInfo.o: generalInfo.c
+	$(CC) -c generalInfo.c
 	
 clean:
 	rm -f $(OBJECTS)

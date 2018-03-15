@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "searchQuery.h"
 #include "index.h"
 #include "invertedIndex.h"
 #include "variousMethods.h"
+#include "generalInfo.h"
 
 
 int main (int argc,char* argv[]){
