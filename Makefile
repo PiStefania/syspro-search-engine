@@ -1,4 +1,4 @@
-CC = gcc -g
+CC = gcc -g -lm
 FILES = main.c variousMethods.c index.c invertedIndex.c searchQuery.c tfQuery.c dfQuery.c generalInfo.c
 OBJECTS = main.o variousMethods.o index.o invertedIndex.o searchQuery.o tfQuery.o dfQuery.o generalInfo.o
 OUT = minisearch

@@ -37,7 +37,7 @@ int main (int argc,char* argv[]){
 	populateTrie(root,index,lines,info);
 	
 	//queries
-	optionsUserInput(K,root);
+	optionsUserInput(K,root,info,index);
 	
 	//delete data structures
 	destroyMapIndex(index,lines);

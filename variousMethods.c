@@ -94,7 +94,7 @@ int checkFileGetLines(FILE *fp){
 	return lines;
 }
 
-void optionsUserInput(int K,rootNode* root){
+void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 	int read;
 	size_t len = 0;
 	char* line = NULL;
@@ -104,6 +104,9 @@ void optionsUserInput(int K,rootNode* root){
 		printf("Reminder ('/search 10words', '/df', '/df word', '/tf id word', '/exit').\n");
 		if((read = getline(&line, &len, stdin)) != -1){
 			line = strtok(line,"\n");
+			if(line == NULL){
+				continue;
+			}
 			token = strtok(line," ");
 			if(strcmp(line,"/exit")==0){
 				printf("Exiting process.\n");
@@ -115,9 +118,11 @@ void optionsUserInput(int K,rootNode* root){
 					break;
 				}
 				int words = 1;
+				
+				scores* scoresArray = createScoresArray(); 
 				while(token!=NULL){
 					//search		
-					
+					calculateScoresWord(root,token,info,scoresArray,index);
 					//last word
 					if(words == MAX_WORDS){
 						break;
@@ -125,6 +130,12 @@ void optionsUserInput(int K,rootNode* root){
 					token = strtok(NULL," ");
 					words++;
 				}
+				
+				//print k scores
+				
+				printScoresArray(scoresArray);
+				
+				destroyScoresArray(&scoresArray);
 			}else if(strcmp(token,"/df")==0){
 				token = strtok(NULL," ");
 				if(token == NULL){
