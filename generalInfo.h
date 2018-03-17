@@ -4,8 +4,8 @@
 typedef struct generalInfo{
 	int totalWords;
 	int totalDocuments;
-	int k1;
-	int b;
+	double k1;
+	double b;
 }generalInfo;
 
 

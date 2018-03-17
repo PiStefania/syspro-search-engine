@@ -108,10 +108,10 @@ void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 				continue;
 			}
 			token = strtok(line," ");
-			if(strcmp(line,"/exit")==0){
+			if(strcmp(line,"/exit")==0 || strcmp(line,"\\exit")==0){
 				printf("Exiting process.\n");
 				break;
-			}else if(strcmp(token,"/search")==0){
+			}else if(strcmp(token,"\\search")==0 || strcmp(token,"/search")==0){
 				token = strtok(NULL," ");
 				if(token == NULL){
 					printf("Search query with no search words.Terminating process.\n");
@@ -132,11 +132,11 @@ void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 				}
 				
 				//print k scores
-				
+				heapSort(scoresArray);
 				printScoresArray(scoresArray);
 				
 				destroyScoresArray(&scoresArray);
-			}else if(strcmp(token,"/df")==0){
+			}else if(strcmp(token,"/df")==0 || strcmp(token,"\\df")==0){
 				token = strtok(NULL," ");
 				if(token == NULL){
 					//return all
@@ -156,7 +156,7 @@ void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 						printf("%s %d\n",token,specificDocumentFrequency);
 					}
 				}
-			}else if(strcmp(token,"/tf")==0){
+			}else if(strcmp(token,"/tf")==0 || strcmp(token,"\\tf")==0){
 				token = strtok(NULL," ");
 				if(token == NULL){
 					printf("Tf query with no document id.Terminating process.\n");
@@ -188,6 +188,7 @@ void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 				break;
 			}
 		}
+		break;
 	}
 	
 	free(line);

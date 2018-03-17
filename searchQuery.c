@@ -11,8 +11,42 @@ void printMaxKScores(){
 
 }
 
-void countingSortScores(scores* scoresArray, int K){
-	
+void heapify(scores* scoresArray, int n, int i){
+	int largest = i;  // Initialize largest as root
+    int l = 2*i + 1;  // left = 2*i + 1
+    int r = 2*i + 2;  // right = 2*i + 2
+
+    if (l < n && scoresArray->scoreArray[l].score < scoresArray->scoreArray[largest].score)
+        largest = l;
+
+    if (r < n && scoresArray->scoreArray[r].score < scoresArray->scoreArray[largest].score)
+        largest = r;
+
+    // If largest is not root
+    if (largest != i)
+    {
+        scoreNode temp = scoresArray->scoreArray[i];
+		scoresArray->scoreArray[i] = scoresArray->scoreArray[largest];
+		scoresArray->scoreArray[largest] = temp;
+		heapify(scoresArray, n, largest);
+    }
+}
+
+void buildHeap(scores* scoresArray){
+	for(int i = (scoresArray->actualSize) / 2; i >= 0; i--){
+		heapify(scoresArray,scoresArray->actualSize,i);
+	}
+}
+
+void heapSort(scores* scoresArray){
+    buildHeap(scoresArray);
+    for (int i=scoresArray->actualSize-1; i>=0; i--)
+    {
+        scoreNode temp = scoresArray->scoreArray[0];
+		scoresArray->scoreArray[0] = scoresArray->scoreArray[i];
+		scoresArray->scoreArray[i] = temp;
+        heapify(scoresArray, i, 0);
+    }
 }
 
 void calculateScoresWord(rootNode* root,char* word,generalInfo* info,scores* scoresArray,mapIndex* index){
@@ -35,8 +69,8 @@ void calculateScoresWord(rootNode* root,char* word,generalInfo* info,scores* sco
 					//last char
 					if(tempNode->postList != NULL){
 						insertEachPostNode(scoresArray,tempNode,info,index,word);
-						return;
 					}
+					return;
 				}
 			}else{
 				tempNode = tempNode->nextNode;
@@ -64,7 +98,8 @@ void insertEachPostNode(scores* scoresArray,trieNode* node,generalInfo* info,map
 
 void insertionSortScores(scores* scoresArray, scoreNode* insertNode){
 	int getPosition = binarySearchScores(scoresArray,insertNode->id);
-	if(scoresArray->actualSize-1 == scoresArray->size){
+	
+	if(scoresArray->actualSize == scoresArray->size-1){
 		doubleScoresArray(scoresArray);
 	}
 	

@@ -25,6 +25,9 @@ int binarySearchScores(scores* scoresArray, int id);
 void insertionSortScores(scores* scoresArray, scoreNode* insertNode);
 void printScoresArray(scores* scoresArray);
 void copyDataScore(scoreNode* oldNode,scoreNode* newNode);
+void heapify(scores* scoresArray, int n, int i);
+void buildHeap(scores* scoresArray);
+void heapSort(scores* scoresArray);
 
 //funcs for nodes
 scores* createScoresArray();
