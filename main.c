@@ -34,6 +34,9 @@ int main (int argc,char* argv[]){
 			index = populateIndex(lines,inFile,info);
 		}
 		fclose (inFile);
+	}else{
+		destroyGeneralInfo(&info);
+		return 0;
 	}
 	
 	rootNode *root = createRoot();

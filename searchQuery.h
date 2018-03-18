@@ -28,11 +28,13 @@ void copyDataScore(scoreNode* oldNode,scoreNode* newNode);
 void heapify(scores* scoresArray, int n, int i);
 void buildHeap(scores* scoresArray);
 void heapSort(scores* scoresArray);
+void initializeUnderArray(char* underArray,int length);
+void insertSpecialChars(char* underArray,int beginning,int lengthWord);
 void printSpaces(int spaces);
-void printSpecialChars(int lengthWord);
 void printDividedLines(char* source,int documentLength,int partLength,scoreNode* scoreArray,int bufSize);
 int checkCleanWord(char* source,int c);
 int checkIfWord(char* string,int position,int wordLength);
+void printUnderArray(char* underArray,int length);
 
 //funcs for nodes
 scores* createScoresArray();

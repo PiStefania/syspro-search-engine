@@ -22,7 +22,6 @@ void printMaxKScores(scores* scoresArray,mapIndex* index,int K){
 }
 
 void printAlteredOutput(scoreNode* scoreArray,mapIndex* index,ssize_t bufSize){
-	//printf("scoreArray->words: '%s'\n",scoreArray->words);
 	int documentLength = strlen(index[scoreArray->id].document);
 	int newLine;
 	//get terminal info
@@ -41,10 +40,10 @@ void printAlteredOutput(scoreNode* scoreArray,mapIndex* index,ssize_t bufSize){
 	newLine = totalChars / maxChars;
 	if(newLine == 0){
 		//document can be printed on one line
-		int posPrinted = 0;
-		printf("%s\n",index[scoreArray->id].document);
-		printSpaces(bufSize);
+		char* underArray = malloc((documentLength+1)*sizeof(char));
+		initializeUnderArray(underArray,documentLength+1);
 		//print new line and search words for underlining
+		printf("%s\n",index[scoreArray->id].document);
 		char* wordsOfDocument = malloc((strlen(scoreArray->words)+1)*sizeof(char));
 		strcpy(wordsOfDocument,scoreArray->words);
 		char* subString = strtok(wordsOfDocument," ");
@@ -56,18 +55,20 @@ void printAlteredOutput(scoreNode* scoreArray,mapIndex* index,ssize_t bufSize){
 				unsigned int position = (uintptr_t) ptr - (uintptr_t) index[scoreArray->id].document;
 				//check if it is a word
 				if(checkIfWord(index[scoreArray->id].document,position,subStringLength)){
-					printSpaces(position-posPrinted);
-					printSpecialChars(subStringLength);
+					insertSpecialChars(underArray,position,position+subStringLength);
 				}
 				//search from next position
 				ptr++;
-				posPrinted = position + subStringLength;
 			}
 			subString = strtok(NULL," ");
 			if(subString == NULL)
 				break;
 			subStringLength = strlen(subString);
 		}
+		printSpaces(bufSize);
+		printUnderArray(underArray,documentLength+1);
+		free(underArray);
+		underArray = NULL;
 		free(wordsOfDocument);
 		wordsOfDocument = NULL;
 		printf("\n");
@@ -77,6 +78,33 @@ void printAlteredOutput(scoreNode* scoreArray,mapIndex* index,ssize_t bufSize){
 		int lengthLine = maxChars - bufSize;
 		int partSize = documentLength / (newLine + 1);
 		printDividedLines(index[scoreArray->id].document,documentLength,partSize,scoreArray,bufSize);
+	}
+}
+
+//print " " depending on 'spaces'
+void printSpaces(int spaces){
+	for(int i=0;i<spaces;i++){
+		printf(" ");
+	}
+}
+
+//initialize under array
+void initializeUnderArray(char* underArray,int length){
+	for(int i=0;i<length;i++){
+		underArray[i] = ' ';
+	}
+}
+
+//inserts underlying special char '^' depending on 'lengthWord'
+void insertSpecialChars(char* underArray,int beginning,int lengthWord){
+	for(int i=beginning;i<lengthWord;i++){
+		underArray[i] = '^';
+	}
+}
+
+void printUnderArray(char* underArray,int length){
+	for(int i=0;i<length;i++){
+		printf("%c",underArray[i]);
 	}
 }
 
@@ -117,6 +145,7 @@ void printDividedLines(char* source,int documentLength,int partLength,scoreNode*
 	char* line;
 	int size = 0;
 	int counterLength = partLength;
+	int foundWord = 0;
 	for(int i=0;i<documentLength;i++){
 		size++;
 		if(i == counterLength){
@@ -127,15 +156,14 @@ void printDividedLines(char* source,int documentLength,int partLength,scoreNode*
 				i -= breakWord;
 			}
 			line = malloc((size+1)*sizeof(char));
-			strncpy(line,source + i - size + 1 ,size);
-			line[size] = '\0';
-			size = 0;
-			
-			//print special chars
-			int posPrinted = 0;
+			strncpy(line,source + i - size + 1,size);
+			line[size] = '\0';			
+			//document can be printed on one line
+			char* underArray = malloc((size+1)*sizeof(char));
+			initializeUnderArray(underArray,size);
+			//print new line and search words for underlining
 			printf("%s\n",line);
 			printSpaces(bufSize);
-			//print new line and search words for underlining
 			char* wordsOfDocument = malloc((strlen(scoreArray->words)+1)*sizeof(char));
 			strcpy(wordsOfDocument,scoreArray->words);
 			char* subString = strtok(wordsOfDocument," ");
@@ -145,23 +173,31 @@ void printDividedLines(char* source,int documentLength,int partLength,scoreNode*
 				while((ptr=strstr(ptr,subString)) != NULL){
 					//for each first position of char of occurence
 					unsigned int position = (uintptr_t) ptr - (uintptr_t) line;
+					//check if it is a word
 					if(checkIfWord(line,position,subStringLength)){
-						printSpaces(position-posPrinted);
-						printSpecialChars(subStringLength);
+						insertSpecialChars(underArray,position,position+subStringLength);
+						foundWord = 1;
 					}
-					//go to next position
+					//search from next position
 					ptr++;
-					posPrinted = position + subStringLength;
 				}
 				subString = strtok(NULL," ");
 				if(subString == NULL)
 					break;
 				subStringLength = strlen(subString);
 			}
+			if(foundWord){
+				printUnderArray(underArray,size);
+				printf("\n");
+				printSpaces(bufSize);
+			}
+			free(underArray);
+			underArray = NULL;
 			free(wordsOfDocument);
 			wordsOfDocument = NULL;
-			printf("\n");
-			printSpaces(bufSize);
+			
+			size = 0;
+			foundWord = 0;
 
 			free(line);
 			line = NULL;
@@ -178,11 +214,12 @@ void printDividedLines(char* source,int documentLength,int partLength,scoreNode*
 				size -= breakWord;
 			}
 			line = malloc((size+1)*sizeof(char));
-			strncpy(line,source + i - size - 1,size);
+			strncpy(line,source + i - size + 1,size);
 			line[size] = '\0';
 
 			//print special chars
-			int posPrinted = 0;
+			char* underArray = malloc((size+1)*sizeof(char));
+			initializeUnderArray(underArray,size+1);
 			printf("%s\n",line);
 			printSpaces(bufSize);
 			//print new line and search words underline
@@ -196,37 +233,27 @@ void printDividedLines(char* source,int documentLength,int partLength,scoreNode*
 					//for each first position of char of occurence
 					unsigned int position = (uintptr_t) ptr - (uintptr_t) line;
 					if(checkIfWord(line,position,subStringLength)){
-						printSpaces(position-posPrinted);
-						printSpecialChars(subStringLength);
+						foundWord = 1;
+						insertSpecialChars(underArray,position,position+subStringLength);
 					}
 					ptr++;
-					posPrinted = position + subStringLength;
 				}
 				subString = strtok(NULL," ");
 				if(subString == NULL)
 					break;
 				subStringLength = strlen(subString);
 			}
+			if(foundWord){
+				printUnderArray(underArray,size);
+			}
+			printf("\n");
+			free(underArray);
+			underArray = NULL;
 			free(wordsOfDocument);
 			wordsOfDocument = NULL;
-			printf("\n");
 			free(line);
 			line = NULL;
 		}
-	}
-}
-
-//prints " " depending on 'spaces'
-void printSpaces(int spaces){
-	for(int i=0;i<spaces;i++){
-		printf(" ");
-	}
-}
-
-//prints underlying special char '^' depending on 'lengthWord'
-void printSpecialChars(int lengthWord){
-	for(int i=0;i<lengthWord;i++){
-		printf("^");
 	}
 }
 
