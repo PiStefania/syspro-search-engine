@@ -31,6 +31,8 @@ void heapSort(scores* scoresArray);
 void printSpaces(int spaces);
 void printSpecialChars(int lengthWord);
 void printDividedLines(char* source,int documentLength,int partLength,scoreNode* scoreArray,int bufSize);
+void printLinesClean(char* source,int documentLength,int partLength,scoreNode* scoreArray,int bufSize);
+int checkCleanWord(char* source,int c);
 
 //funcs for nodes
 scores* createScoresArray();

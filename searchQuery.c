@@ -4,6 +4,7 @@
 #include <math.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <ctype.h>
 #include <inttypes.h>
 #include "searchQuery.h"
 #include "generalInfo.h"
@@ -62,12 +63,38 @@ void printAlteredOutput(scoreNode* scoreArray,mapIndex* index,ssize_t bufSize){
 	}
 }
 
+int checkCleanWord(char* source,int c){
+	int length = strlen(source);
+	if(isspace(source[c]) || c == length){
+		//whitespace
+		return 0;
+	}else{
+		if(isspace(source[c+1]) ||  c+1 == length)
+			return 0;
+		int i = c;
+		int counter = 0;
+		while(!isspace(source[i])){
+			counter++;
+			i--;
+		}
+		return counter;
+	}
+}
+
 void printDividedLines(char* source,int documentLength,int partLength,scoreNode* scoreArray,int bufSize){
 	char* line;
 	int size = 0;
+	int counterLength = partLength;
 	for(int i=0;i<documentLength;i++){
 		size++;
-		if(i != 0 && i%partLength == 0){
+		if(i == counterLength){
+			int breakWord = checkCleanWord(source,i);
+			if(breakWord > 0){
+				//printf("size1: %d\n",size);
+				size -= breakWord;
+				i -= breakWord;
+				//printf("size2: %d\n",size);
+			}
 			line = malloc((size+1)*sizeof(char));
 			strncpy(line,source + i - size + 1 ,size);
 			line[size] = '\0';
@@ -104,8 +131,17 @@ void printDividedLines(char* source,int documentLength,int partLength,scoreNode*
 
 			free(line);
 			line = NULL;
+			if(counterLength + partLength > documentLength){
+				counterLength += documentLength - counterLength;
+			}else{
+				counterLength += partLength;
+			}
 		}
 		if(i == documentLength-1){
+			int breakWord = checkCleanWord(source,i);
+			if(breakWord > 0){
+				size -= breakWord;
+			}
 			line = malloc((size+1)*sizeof(char));
 			strncpy(line,source + i - size - 1,size);
 			line[size] = '\0';
