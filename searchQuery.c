@@ -2,13 +2,159 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include <inttypes.h>
 #include "searchQuery.h"
 #include "generalInfo.h"
 #define INIT_SIZE 10
 
 
-void printMaxKScores(){
+void printMaxKScores(scores* scoresArray,mapIndex* index,int K){
+	for(int i=0;i<K;i++){
+		printf("%d.(%d)[%lf] ",i+1,scoresArray->scoreArray[i].id,scoresArray->scoreArray[i].score);
+		ssize_t bufSize = snprintf(NULL,0,"%d.(%d)[%lf] ",i+1,scoresArray->scoreArray[i].id,scoresArray->scoreArray[i].score);
+		printAlteredOutput(&scoresArray->scoreArray[i],index,bufSize);
+	}
+}
 
+void printAlteredOutput(scoreNode* scoreArray,mapIndex* index,ssize_t bufSize){
+	int documentLength = strlen(index[scoreArray->id].document);
+	int newLine;
+	//get terminal info
+	struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    int maxChars = w.ws_col;
+	int totalChars = documentLength + bufSize;
+	newLine = totalChars / maxChars;
+	if(newLine == 0){
+		int posPrinted = 0;
+		printf("%s\n",index[scoreArray->id].document);
+		printSpaces(bufSize);
+		//print new line and search words underline
+		char* wordsOfDocument = malloc((strlen(scoreArray->words)+1)*sizeof(char));
+		strcpy(wordsOfDocument,scoreArray->words);
+		char* subString = strtok(wordsOfDocument," ");
+		int subStringLength = strlen(subString);
+		while(wordsOfDocument != NULL){
+			char* ptr = index[scoreArray->id].document;
+			while((ptr=strstr(ptr,subString)) != NULL){
+				//for each first position of char of occurence
+				unsigned int position = (uintptr_t) ptr - (uintptr_t) index[scoreArray->id].document;
+				printSpaces(position-posPrinted);
+				printSpecialChars(subStringLength);
+				ptr++;
+				posPrinted = position + subStringLength;
+			}
+			subString = strtok(NULL," ");
+			if(subString == NULL)
+				break;
+			subStringLength = strlen(subString);
+		}
+		free(wordsOfDocument);
+		wordsOfDocument = NULL;
+		printf("\n");
+	}else{
+		int posPrinted = 0;
+		int lengthLine = maxChars - bufSize;
+		int partSize = documentLength / (newLine + 1);
+		printDividedLines(index[scoreArray->id].document,documentLength,partSize,scoreArray,bufSize);
+	}
+}
+
+void printDividedLines(char* source,int documentLength,int partLength,scoreNode* scoreArray,int bufSize){
+	char* line;
+	int size = 0;
+	for(int i=0;i<documentLength;i++){
+		size++;
+		if(i != 0 && i%partLength == 0){
+			line = malloc((size+1)*sizeof(char));
+			strncpy(line,source + i - size + 1 ,size);
+			line[size] = '\0';
+			size = 0;
+			
+			//print special chars
+			int posPrinted = 0;
+			printf("%s\n",line);
+			printSpaces(bufSize);
+			//print new line and search words underline
+			char* wordsOfDocument = malloc((strlen(scoreArray->words)+1)*sizeof(char));
+			strcpy(wordsOfDocument,scoreArray->words);
+			char* subString = strtok(wordsOfDocument," ");
+			int subStringLength = strlen(subString);
+			while(wordsOfDocument != NULL){
+				char* ptr = line;
+				while((ptr=strstr(ptr,subString)) != NULL){
+					//for each first position of char of occurence
+					unsigned int position = (uintptr_t) ptr - (uintptr_t) line;
+					printSpaces(position-posPrinted);
+					printSpecialChars(subStringLength);
+					ptr++;
+					posPrinted = position + subStringLength;
+				}
+				subString = strtok(NULL," ");
+				if(subString == NULL)
+					break;
+				subStringLength = strlen(subString);
+			}
+			free(wordsOfDocument);
+			wordsOfDocument = NULL;
+			printf("\n");
+			printSpaces(bufSize);
+
+			free(line);
+			line = NULL;
+		}
+		if(i == documentLength-1){
+			line = malloc((size+1)*sizeof(char));
+			strncpy(line,source + i - size - 1,size);
+			line[size] = '\0';
+
+			//print special chars
+			int posPrinted = 0;
+			printf("%s\n",line);
+			printSpaces(bufSize);
+			//print new line and search words underline
+			char* wordsOfDocument = malloc((strlen(scoreArray->words)+1)*sizeof(char));
+			strcpy(wordsOfDocument,scoreArray->words);
+			char* subString = strtok(wordsOfDocument," ");
+			int subStringLength = strlen(subString);
+			while(wordsOfDocument != NULL){
+				char* ptr = line;
+				while((ptr=strstr(ptr,subString)) != NULL){
+					//for each first position of char of occurence
+					unsigned int position = (uintptr_t) ptr - (uintptr_t) line;
+					printSpaces(position-posPrinted);
+					printSpecialChars(subStringLength);
+					ptr++;
+					posPrinted = position + subStringLength;
+				}
+				subString = strtok(NULL," ");
+				if(subString == NULL)
+					break;
+				subStringLength = strlen(subString);
+			}
+			free(wordsOfDocument);
+			wordsOfDocument = NULL;
+			printf("\n");
+
+			free(line);
+			line = NULL;
+		}
+		
+	}
+}
+
+void printSpaces(int spaces){
+	for(int i=0;i<spaces;i++){
+		printf(" ");
+	}
+}
+
+void printSpecialChars(int lengthWord){
+	for(int i=0;i<lengthWord;i++){
+		printf("^");
+	}
 }
 
 void heapify(scores* scoresArray, int n, int i){

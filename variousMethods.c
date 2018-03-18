@@ -101,7 +101,7 @@ void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 	char* token = NULL;
 	printf("Input desirable query: \n");
 	while(1){
-		printf("Reminder ('/search 10words', '/df', '/df word', '/tf id word', '/exit').\n");
+		printf("Reminder ('/search %d words', '/df', '/df word', '/tf id word', '/exit').\n",K);
 		if((read = getline(&line, &len, stdin)) != -1){
 			line = strtok(line,"\n");
 			if(line == NULL){
@@ -133,8 +133,7 @@ void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 				
 				//print k scores
 				heapSort(scoresArray);
-				printScoresArray(scoresArray);
-				
+				printMaxKScores(scoresArray,index,K);
 				destroyScoresArray(&scoresArray);
 			}else if(strcmp(token,"/df")==0 || strcmp(token,"\\df")==0){
 				token = strtok(NULL," ");
@@ -188,7 +187,8 @@ void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 				break;
 			}
 		}
-		break;
+		if(read == -1)
+			break;
 	}
 	
 	free(line);

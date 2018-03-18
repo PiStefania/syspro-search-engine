@@ -14,10 +14,12 @@ void populateTrie(rootNode* root,mapIndex* index,int noElems,generalInfo* info){
 	int counterWords = 0;
 	for(int i=0;i<noElems;i++){
 		int wordsSpecificDoc = 0;
-		if(index[i].document == NULL)
+		char* tempDocument = malloc((strlen(index[i].document)+1)*sizeof(char));
+		strcpy(tempDocument,index[i].document);
+		if(tempDocument == NULL)
 			continue;
 		
-		tempWord = strtok(index[i].document," ");
+		tempWord = strtok(tempDocument," ");
 		while(tempWord!=NULL){
 			//insert to trie
 			counterWords++;
@@ -26,6 +28,8 @@ void populateTrie(rootNode* root,mapIndex* index,int noElems,generalInfo* info){
 			tempWord = strtok(NULL," ");
 		}
 		index[i].words = wordsSpecificDoc;
+		free(tempDocument);
+		tempDocument = NULL;
 	}
 	info->totalWords = counterWords;
 }

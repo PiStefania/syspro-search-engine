@@ -16,8 +16,8 @@ typedef struct scores{
 	scoreNode* scoreArray;
 }scores;
 
-void printMaxKScores();
-void countingSortScores();
+void printMaxKScores(scores* scoresArray,mapIndex* index,int K);
+void printAlteredOutput(scoreNode* scoreArray,mapIndex* index,ssize_t bufSize);
 void calculateScoresWord(rootNode* root,char* word,generalInfo* info,scores* scoresArray,mapIndex* index);
 void insertEachPostNode(scores* scoresArray,trieNode* node,generalInfo* info,mapIndex* index,char* word);
 double calculateScore(generalInfo* info,int docFrequency,postingLists* node,mapIndex* index);
@@ -28,6 +28,9 @@ void copyDataScore(scoreNode* oldNode,scoreNode* newNode);
 void heapify(scores* scoresArray, int n, int i);
 void buildHeap(scores* scoresArray);
 void heapSort(scores* scoresArray);
+void printSpaces(int spaces);
+void printSpecialChars(int lengthWord);
+void printDividedLines(char* source,int documentLength,int partLength,scoreNode* scoreArray,int bufSize);
 
 //funcs for nodes
 scores* createScoresArray();
