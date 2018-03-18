@@ -2,10 +2,10 @@
 #define _GENERALINFO_H_
 
 typedef struct generalInfo{
-	int totalWords;
-	int totalDocuments;
-	double k1;
-	double b;
+	int totalWords;				//total words of all documents
+	int totalDocuments;			//total documents
+	double k1;					//for score
+	double b;					//for score
 }generalInfo;
 
 

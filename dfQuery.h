@@ -2,13 +2,13 @@
 #define _DFQUERY_H_
 
 typedef struct stackNode{
-	int alternatives;
-	char character;
-	int lastChar;
+	int alternatives;		//alternatives of char
+	char character;			
+	int lastChar;			//if last character of word
 }stackNode;
 
 typedef struct stack{
-	int size;
+	int size;				
 	int top;
 	stackNode* elements;
 }stack;

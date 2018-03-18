@@ -10,6 +10,7 @@
 #define MAX_WORDS 10
 #define STACK_SIZE 10
 
+//specifies whether or not the arguments given are correct
 void pickArgumentsMain(int argc,char* argv[],char** docfile,int* K){
 	
 	char* noOfK = NULL;
@@ -53,6 +54,7 @@ void pickArgumentsMain(int argc,char* argv[],char** docfile,int* K){
 	}
 }
 
+//checks if file is formatted correctly
 int checkFileGetLines(FILE *fp){
 	int read;
 	size_t len = 0;
@@ -94,25 +96,27 @@ int checkFileGetLines(FILE *fp){
 	return lines;
 }
 
+//this function executes all kinds of queries (/tf, /df, /search, /exit)
 void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 	int read;
 	size_t len = 0;
 	char* line = NULL;
+	char* l = NULL;
 	char* token = NULL;
-	printf("Input desirable query: \n");
+	//printf("Input desirable query: \n");
 	while(1){
-		printf("Reminder ('/search %d words', '/df', '/df word', '/tf id word', '/exit').\n",K);
+		//printf("Reminder ('/search %d words', '/df', '/df word', '/tf id word', '/exit').\n",K);
 		if((read = getline(&line, &len, stdin)) != -1){
-			line = strtok(line,"\n");
-			if(line == NULL){
+			l = strtok(line,"\n");
+			if(l == NULL){
 				continue;
 			}
-			token = strtok(line," ");
-			if(strcmp(line,"/exit")==0 || strcmp(line,"\\exit")==0){
+			token = strtok(l," \t");
+			if(strcmp(l,"/exit")==0 || strcmp(l,"\\exit")==0){
 				printf("Exiting process.\n");
 				break;
 			}else if(strcmp(token,"\\search")==0 || strcmp(token,"/search")==0){
-				token = strtok(NULL," ");
+				token = strtok(NULL," \t");
 				if(token == NULL){
 					printf("Search query with no search words.Terminating process.\n");
 					break;
@@ -127,16 +131,20 @@ void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 					if(words == MAX_WORDS){
 						break;
 					}
-					token = strtok(NULL," ");
+					token = strtok(NULL," \t");
 					words++;
 				}
 				
 				//print k scores
 				heapSort(scoresArray);
-				printMaxKScores(scoresArray,index,K);
+				int maxK = K;
+				if(K > scoresArray->actualSize){
+					maxK = scoresArray->actualSize;
+				}
+				printMaxKScores(scoresArray,index,maxK);
 				destroyScoresArray(&scoresArray);
 			}else if(strcmp(token,"/df")==0 || strcmp(token,"\\df")==0){
-				token = strtok(NULL," ");
+				token = strtok(NULL," \t");
 				if(token == NULL){
 					//return all
 					stack* stackWord = malloc(sizeof(stack));
@@ -145,31 +153,34 @@ void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 					destroyStack(&stackWord);
 				}else{
 					//return df of specific word
-					int specificDocumentFrequency = retDocFrequency(root,token);
-					if(specificDocumentFrequency == -1){
-						printf("An error occured.Terminating process.\n");
-						break;
-					}else if(specificDocumentFrequency == -2 || specificDocumentFrequency == 0){
-						printf("Not found.\n");
-					}else{
-						printf("%s %d\n",token,specificDocumentFrequency);
+					while(token != NULL){
+						int specificDocumentFrequency = retDocFrequency(root,token);
+						if(specificDocumentFrequency == -1){
+							printf("An error occured.Terminating process.\n");
+							break;
+						}else if(specificDocumentFrequency == -2 || specificDocumentFrequency == 0){
+							printf("Not found.\n");
+						}else{
+							printf("%s %d\n",token,specificDocumentFrequency);
+						}
+						token = strtok(NULL," \t");
 					}
 				}
 			}else if(strcmp(token,"/tf")==0 || strcmp(token,"\\tf")==0){
-				token = strtok(NULL," ");
+				token = strtok(NULL," \t");
 				if(token == NULL){
-					printf("Tf query with no document id.Terminating process.\n");
-					break;
+					//printf("Tf query with no document id.Terminating process.\n");
+					continue;
 				}
 				int id = atoi(token);
 				if(id == 0 && token[0]!='0'){
-					printf("Tf query with false document id.Terminating process.\n");
-					break;
+					//printf("Tf query with false document id.Terminating process.\n");
+					continue;
 				}
-				char* word = strtok(NULL," ");
+				char* word = strtok(NULL," \t");
 				if(word == NULL){
-					printf("Tf query with no search word.Terminating process.\n");
-					break;
+					//printf("Tf query with no search word.Terminating process.\n");
+					continue;
 				}
 				
 				int timesAppeared = returnTimesAppeared(root,id,word);
@@ -177,7 +188,8 @@ void optionsUserInput(int K,rootNode* root,generalInfo* info,mapIndex* index){
 					printf("An error occured.Terminating process.\n");
 					break;
 				}else if(timesAppeared == -2 || timesAppeared == 0){
-					printf("Not found.\n");
+					continue;
+					//printf("Not found.\n");
 				}else{
 					printf("%d %s %d\n",id,word,timesAppeared);
 				}

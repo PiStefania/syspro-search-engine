@@ -4,6 +4,7 @@
 #include "invertedIndex.h"
 #include "tfQuery.h"
 
+//find word and return document's term frequency
 int returnTimesAppeared(rootNode* root,int id,char* word){
 	if(root == NULL){
 		return -1;
@@ -33,6 +34,7 @@ int returnTimesAppeared(rootNode* root,int id,char* word){
 	}
 }
 
+//searches a postingLists list in order to find a node with the same id
 int searchPostList(postingLists* list,int id){
 	while(list != NULL){
 		if(list->id == id){

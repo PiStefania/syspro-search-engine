@@ -13,6 +13,7 @@ int main (int argc,char* argv[]){
 	pickArgumentsMain(argc,argv,&docfile,&K);
 	
 	FILE *inFile;
+	//open file for read
 	inFile = fopen(docfile,"r");
 	mapIndex* index = NULL;
 	generalInfo* info = NULL;
@@ -20,20 +21,23 @@ int main (int argc,char* argv[]){
 	int lines = 0;
 	if(inFile!=NULL)
 	{
+		//firstly, check for lines for format deviations
 		lines = checkFileGetLines(inFile);
 		if(lines == -1){
 			printf("IDs set is incorrect.Terminate process.\n");
 			fclose(inFile);
+			destroyGeneralInfo(&info);
 			exit(1);
 		}else{
+			//reread file and populate index
 			rewind(inFile);
 			index = populateIndex(lines,inFile,info);
 		}
 		fclose (inFile);
 	}
 	
-	//printMapIndex(index,lines);
 	rootNode *root = createRoot();
+	//populate trie from index
 	populateTrie(root,index,lines,info);
 	
 	//queries

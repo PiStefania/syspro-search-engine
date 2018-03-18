@@ -8,9 +8,9 @@ typedef struct levelQueue headQueue;
 typedef struct postingListsNode postingLists;
 
 struct postingListsNode{
-	int id;
-	int timesAppeared;
-	postingLists* next;
+	int id;					//id of document
+	int timesAppeared;		//term frequency
+	postingLists* next;		
 }postingListsNode;
 
 struct trieN{
@@ -18,14 +18,14 @@ struct trieN{
 	trieNode *nextNode;
 	headQueue *head;
 	postingLists* postList;
-	int documentFrequency;
-	int firstChar;
+	int documentFrequency;		//size of postingLists
+	int firstChar;				//be the first character of a word
 }trieN;
 
 struct levelQueue{
 	trieNode* firstNode;
 	trieNode* lastNode;
-	int size;
+	int size;				//size of list headQueue
 }levelQueue;
 
 typedef struct rootNode{

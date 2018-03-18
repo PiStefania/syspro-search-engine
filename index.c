@@ -16,6 +16,7 @@ mapIndex* populateIndex(int lines,FILE *fp,generalInfo* info){
 			continue;
 		}
 		
+		//get document
 		tempLine = strtok(tempLine," \t");
 		char* document = strtok(NULL,"");
 		char* temp;
@@ -28,6 +29,7 @@ mapIndex* populateIndex(int lines,FILE *fp,generalInfo* info){
 			temp = NULL;
 		}
 		
+		//insert to index
 		if(temp == NULL){
 			index[counter].document = NULL;
 		}

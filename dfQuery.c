@@ -21,6 +21,7 @@ int retDocFrequency(rootNode* root,char* word){
 					tempNode = tempNode->head->firstNode;
 					break;
 				}else{
+					//found -> return document frequency
 					return tempNode->documentFrequency;
 				}
 			}else{
@@ -33,6 +34,7 @@ int retDocFrequency(rootNode* root,char* word){
 	}
 }
 
+//print modified stack
 void DFS(trieNode* node,stack* stackWord){
 	if (node != NULL){
 		
@@ -50,6 +52,7 @@ void DFS(trieNode* node,stack* stackWord){
 		if(node->postList != NULL){
 			printCurrentStack(stackWord);
 			printf(" %d\n",node->documentFrequency);
+			//pop if character has been printed for all alternatives
 			while(!stackIsEmpty(stackWord)){
 				if(stackWord->elements[stackWord->top].alternatives == 0 && stackWord->elements[stackWord->top].lastChar){
 					stackPop(stackWord);

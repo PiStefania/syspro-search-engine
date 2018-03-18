@@ -9,6 +9,7 @@ rootNode* createRoot(){
 	return root;
 }
 
+//populate trie with each word of each document
 void populateTrie(rootNode* root,mapIndex* index,int noElems,generalInfo* info){
 	char* tempWord = NULL;
 	int counterWords = 0;
@@ -19,13 +20,13 @@ void populateTrie(rootNode* root,mapIndex* index,int noElems,generalInfo* info){
 		if(tempDocument == NULL)
 			continue;
 		
-		tempWord = strtok(tempDocument," ");
+		tempWord = strtok(tempDocument," \t");
 		while(tempWord!=NULL){
 			//insert to trie
 			counterWords++;
 			wordsSpecificDoc++;
 			insertTrie(tempWord,i,root);
-			tempWord = strtok(NULL," ");
+			tempWord = strtok(NULL," \t");
 		}
 		index[i].words = wordsSpecificDoc;
 		free(tempDocument);
@@ -107,7 +108,9 @@ void insertTrie(char* word,int id,rootNode* root){
 	}
 }
 
+//returns the next head of the trie in which we need to insert char
 headQueue* insertCharacter(headQueue* wordQueue,char c,int id,int lastChar,int firstChar){
+	//head null
 	if(wordQueue == NULL){
 		wordQueue = createHeadQueue();
 		wordQueue->firstNode = createNode(c,firstChar);
@@ -123,6 +126,7 @@ headQueue* insertCharacter(headQueue* wordQueue,char c,int id,int lastChar,int f
 		return wordQueue->firstNode->head;
 	}
 	
+	//head has nodes
 	trieNode* tempNode = wordQueue->firstNode;
 	while(tempNode!=NULL){
 		if(tempNode->character == c){
@@ -138,6 +142,7 @@ headQueue* insertCharacter(headQueue* wordQueue,char c,int id,int lastChar,int f
 		}
 	}
 
+	//(firstNode is NULL)
 	if(wordQueue->firstNode == NULL){
 		wordQueue->firstNode = createNode(c,firstChar);
 		if(lastChar){
@@ -151,6 +156,7 @@ headQueue* insertCharacter(headQueue* wordQueue,char c,int id,int lastChar,int f
 		wordQueue->size++;
 		return wordQueue->firstNode->head;
 	}else{
+		//has node but not the one we want->insert to lastNode->nextNode
 		wordQueue->lastNode->nextNode = createNode(c,firstChar);
 		if(lastChar){
 			int newNodeCreated = insertPostList(&wordQueue->lastNode->nextNode->postList,id);
@@ -182,6 +188,7 @@ void destroyPostList(trieNode** node){
 	(*node)->postList = NULL;
 }
 
+//recursively destroy lists
 void destroyHeadQueues(headQueue** head){
 	headQueue* currentHead = *head;
 	trieNode* currentNode = currentHead->firstNode;
